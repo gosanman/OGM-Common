@@ -1,6 +1,12 @@
 # Changes
 
-## 1.2.1: 2024-xx-xx
+## 1.3.0:
+* Feature #34: Time Implementation and Sun Calculation 
+* Update: RP2040 Platform to Core 4.2.1
+* Change: Stop build process on overlapping flash memory regions
+  * Refactor: Memory Layout-Check/Info in Build-Process
+
+## 1.2.1: 2024-11-18
 * Update: RP2040 Platform to Core 4.1.1 + Rpi Base Platform
 * Add: Now allows you to delete the KNX or OpenKNX flash area on all platforms
 * Some small optimizations
@@ -9,6 +15,10 @@
 * Update: Scripts
 * App: Support SerialLED (Neopixel/WS2812)
 * Add: PSRAM info in 'm' console command
+* Fix: delayTimerInit could return 0 in case of overflow between calls to millis()
+* Fix: Misspelling writeDiagenoseKo -> writeDiagnoseKo
+* Change: Set JLink und JTAG as default debugger and USB as default uploader
+* Add: Support ESP32 JTAG
 
 ## 1.2.0: 2024-07-02
 * Update: RP2040 Platform to Core 3.9.3
