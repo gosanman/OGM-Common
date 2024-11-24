@@ -43,9 +43,7 @@ namespace OpenKNX
 
         class TimeManager
         {
-            // OPENKNX_TIME_CLOCK _timeClock = OPENKNX_TIME_CLOCK();
-            TimeClock* _timeClock = nullptr; // Zeiger auf die aktuelle Zeitquelle
-
+            TimeClock* _timeClock = nullptr;
             friend Common;
             friend Console;
             friend TimeProvider;
@@ -69,7 +67,6 @@ namespace OpenKNX
 #ifdef OPENKNX_TIME_DIGAGNOSTIC
             void commandSetDateTime(std::string& cmd);
 #endif
-
             void setup(bool configured);
             void setDaylightSavingMode(DaylightSavingMode daylightSavingMode);
             void loop();
@@ -83,14 +80,11 @@ namespace OpenKNX
             std::string buildTimezoneString(DaylightSavingMode daylightSavingMode);
 
           public:
-            //~TimeManager()
-            //{
-            //    delete _timeClock;
-            //}
+            ~TimeManager() { delete _timeClock; } 
             /*
             Set the time clock, a previous set time clock will be deleted
             */
-            void setTimeClock(TimeClock& timeClock, bool deleteOld = false);
+            void setTimeClock(TimeClock* timeClock, bool deleteOld = false);
             /*
             Returns true, if a time provider was set
             */

@@ -123,10 +123,6 @@ namespace OpenKNX
 #endif
         void TimeManager::commandInformation()
         {
-
-            time_t now = 0;
-            if (_timeClock != nullptr) now = _timeClock->getTime();
-            logInfoP("Unixtime: %ld", now);
             if (isValid())
             {
                 DateTime time = getUtcTime();
@@ -351,25 +347,18 @@ namespace OpenKNX
 #endif
         }
 
-        void TimeManager::setTimeClock(TimeClock& timeClock, bool replaceOld)
+        void TimeManager::setTimeClock(TimeClock* timeClock, bool replaceOld)
         {
-            bool bSetTimeClock = false;
-            if (_timeClock != nullptr)
+            if (timeClock == nullptr) return;
+            if (_timeClock != nullptr && replaceOld)
             {
-                if (replaceOld)
-                {
-                    delete _timeClock;
-                    bSetTimeClock = true;
-                }
+                delete _timeClock;
+                _timeClock = nullptr;
             }
-            else
+            if (_timeClock == nullptr)
             {
-                bSetTimeClock = true;
-            }
-            if (bSetTimeClock)
-            {
-                if (_timeClock = &timeClock)
-                    _timeClock->setup();
+                _timeClock = timeClock;
+                _timeClock->setup();
             }
         }
 
@@ -383,8 +372,8 @@ namespace OpenKNX
 #else
             TimeClock* timeClock = new TimeClockSystem();
 #endif
-            setTimeClock(*timeClock);
-            if (_timeClock)
+            setTimeClock(timeClock);
+            if (_timeClock != nullptr)
                 _timeClock->setup();
 
             tm tm = {0};
@@ -542,7 +531,8 @@ namespace OpenKNX
                 result += "0,366"; // Always daylight saving tiem
             else
                 result += "366,367"; // Always standard time
-            return result;
+
+            return result.c_str();
         }
 
         void TimeManager::sendTime()
@@ -552,7 +542,9 @@ namespace OpenKNX
 
         void TimeManager::loop()
         {
-            _timeClock->loop();
+            if (_timeClock != nullptr)
+                _timeClock->loop();
+
             if (_timeProvider != nullptr)
                 _timeProvider->loop();
 
@@ -636,11 +628,8 @@ namespace OpenKNX
 
         bool TimeManager::isValid()
         {
-            time_t now = 0;
-
-            if (_timeClock != nullptr)
-                now = _timeClock->getTime();
-            return now > 1704070800; // 2024-01-01
+            if (_timeClock == nullptr) return false;
+            return _timeClock->getTime() > 1704070800; // 2024-01-01
         }
 
         DateTime TimeManager::getLocalTime()

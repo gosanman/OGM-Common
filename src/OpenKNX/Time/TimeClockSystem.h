@@ -1,7 +1,6 @@
 #pragma once
 #include "TimeClock.h"
 #include <sys/time.h>
-
 namespace OpenKNX
 {
     namespace Time
